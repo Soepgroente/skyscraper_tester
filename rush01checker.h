@@ -9,6 +9,10 @@
 # include <limits.h>
 # include <stdbool.h>
 
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define RESET	"\e[m"
+
 extern int size;
 extern int board[9][9];
 extern int top_clues[9];

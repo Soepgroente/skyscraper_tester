@@ -6,7 +6,7 @@
 /*   By: vvan-der <vvan-der@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/25 11:57:41 by vvan-der      #+#    #+#                 */
-/*   Updated: 2024/06/16 19:39:29 by vincent       ########   odam.nl         */
+/*   Updated: 2024/06/16 20:01:11 by vincent       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,17 @@ int	main(int argc, char** argv)
 	read_output();
 	validity = checkBoardValidity();
 	if (validity == 0)
-		puts("Correct!");
+	{
+		printf(GREEN);
+		printf("Correct!");
+	}
 	else
 	{
+		printf(RED);
 		puts("Incorrect solution");
+		printf(RESET);
 		printf("error code: %d\n", validity);
 	}
+	printf(RESET);
 	print_board(top_clues, bottom_clues, left_clues, right_clues);
 }
