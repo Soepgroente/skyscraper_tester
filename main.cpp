@@ -6,7 +6,7 @@
 /*   By: vvan-der <vvan-der@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/25 11:57:41 by vvan-der      #+#    #+#                 */
-/*   Updated: 2025/02/22 18:02:11 by vincent       ########   odam.nl         */
+/*   Updated: 2025/02/22 19:09:40 by vincent       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	main(int argc, char** argv)
 		std::cerr << "Usage: \"./rush01checker\" or \"./rush01checker bonus\"" << std::endl;
 		return (1);
 	}
-	if (argc == 2 && argv[1] == "bonus")
+	if (argc == 2 && std::string(argv[1]) == "bonus")
 	{
 		addBonus(bonus);
 	}

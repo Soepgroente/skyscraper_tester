@@ -7,11 +7,11 @@ static int	skyscrape_top(const std::vector<std::vector<int>>& board, const std::
 	int count;
 	int vision;
 
-	for (int x = 0; x < clues.size(); x++)
+	for (int x = 0; x < (int)clues.size(); x++)
 	{
 		count = 0;
 		vision = 0;
-		for (int y = 0; y < clues.size(); y++)
+		for (int y = 0; y < (int)clues.size(); y++)
 		{
 			if (board[y][x] > vision)
 			{

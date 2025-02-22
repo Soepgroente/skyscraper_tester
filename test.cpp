@@ -126,7 +126,7 @@ void	test(const std::vector<std::string>& args, bool solvable)
 		{
 			close(pipeFd[0]);
 			duplicate_fd(pipeFd[1], STDOUT_FILENO);
-			if (execv("./rush-01", argv) == -1);
+			if (execv("./rush-01", argv) == -1)
 				exitError("Failed to execute rush-01");
 		}
 		close(pipeFd[1]);

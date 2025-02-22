@@ -1,6 +1,6 @@
 #include "rush01checker.h"
 
-void	exitError(char* msg)
+void	exitError(std::string msg)
 {
 	std::cerr << msg << std::endl;
 	exit(EXIT_FAILURE);

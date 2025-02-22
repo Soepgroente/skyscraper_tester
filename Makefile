@@ -11,7 +11,7 @@ SRCS	 	:=	fork.cpp \
 				test.cpp \
 				vision.cpp \
 
-OBJECTS		=	$(addprefix $(OBJ_DIR)/,$(SRCS:%.c=%.o))
+OBJECTS		=	$(addprefix $(OBJ_DIR)/,$(SRCS:%.cpp=%.o))
 
 
 all: $(EXECUTABLE)
@@ -22,7 +22,7 @@ $(OBJ_DIR):
 $(EXECUTABLE): $(OBJ_DIR) $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE) 
 
-$(OBJ_DIR)/%.o : %.c
+$(OBJ_DIR)/%.o : %.cpp
 	$(CC) -c $(CFLAGS) -o $@ $^
 
 clean:

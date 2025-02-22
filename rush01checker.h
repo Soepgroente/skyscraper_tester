@@ -18,7 +18,7 @@
 #define GREEN   "\033[32m"
 #define RESET	"\e[m"
 
-void	exitError(char* msg);
+void	exitError(std::string msg);
 pid_t	forkProcess();
 void	addInvalidInputs(std::vector<std::string>& args);
 void	addValid4x4s(std::vector<std::string>& args);
