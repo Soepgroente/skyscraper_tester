@@ -1,13 +1,15 @@
-EXECUTABLE	:=	rush01_checker
+EXECUTABLE	:=	rush01checker
 
-CC			:=	cc
-CFLAGS		=	-Wall -Wextra -Werror #-g -fsanitize=address
+CC			:=	c++
+CFLAGS		=	-Wall -Wextra -Werror -std=c++20 #-g -fsanitize=address
 
 OBJ_DIR		:=	objs
 
-SRCS	 	:=	main.c \
-				utils.c \
-				vision.c \
+SRCS	 	:=	fork.cpp \
+				main.cpp \
+				utils.cpp \
+				test.cpp \
+				vision.cpp \
 
 OBJECTS		=	$(addprefix $(OBJ_DIR)/,$(SRCS:%.c=%.o))
 
