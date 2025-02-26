@@ -113,15 +113,18 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 
 void	test(const std::vector<std::string>& args, bool solvable)
 {
-	int			pipeFd[2];
 	std::string buffer(400, '\0');
+	int	pipeFd[2];
+	int exitStatus = 0;
 	
 	for (size_t i = 0; i < args.size(); i++)
 	{
 		createPipe(pipeFd);
-		pid_t	pid = forkProcess();
 		char*	argv[] = {strdup("./rush-01"), strdup(args[i].c_str()), NULL};
+		if (!argv[0] || !argv[1])
+			exitError("Failed to strdup");
 
+		pid_t	pid = forkProcess();
 		if (pid == 0)
 		{
 			close(pipeFd[0]);
@@ -130,7 +133,9 @@ void	test(const std::vector<std::string>& args, bool solvable)
 				exitError("Failed to execute rush-01");
 		}
 		close(pipeFd[1]);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &exitStatus, 0);
+		if (WEXITSTATUS(exitStatus) == EXIT_FAILURE)
+			exitError("... exiting");
 		ssize_t readBytes = read(pipeFd[0], &buffer[0], sizeof(buffer));
 		if (readBytes == -1)
 			exitError("Failed to read from pipe");

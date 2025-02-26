@@ -1,7 +1,7 @@
 EXECUTABLE	:=	rush01checker
 
 CC			:=	c++
-CFLAGS		=	-Wall -Wextra -Werror -std=c++20 #-g -fsanitize=address
+CPPFLAGS	=	-Wall -Wextra -Werror -std=c++20 #-g -fsanitize=address
 
 OBJ_DIR		:=	objs
 
@@ -20,10 +20,10 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(EXECUTABLE): $(OBJ_DIR) $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE) 
+	$(CC) $(CPPFLAGS) $(OBJECTS) -o $(EXECUTABLE) 
 
 $(OBJ_DIR)/%.o : %.cpp
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CPPFLAGS) -o $@ $^
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -34,5 +34,8 @@ fclean: clean
 re: fclean all
 
 retest: fclean test
+
+debug: CPPFLAGS += -g3 -fsanitize=address
+debug: re
 
 .PHONY: all clean fclean re test
