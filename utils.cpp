@@ -3,7 +3,7 @@
 void	exitError(std::string msg)
 {
 	std::cerr << msg << std::endl;
-	exit(EXIT_FAILURE);
+	exit(55);
 }
 
 void	addInvalidInputs(std::vector<std::string>& args)

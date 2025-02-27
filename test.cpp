@@ -15,7 +15,7 @@ static void	duplicate_fd(int oldFd, int newFd)
 
 static void parseRow(const std::string& buffer, std::vector<int>& row)
 {	
-	for (size_t i = 0; buffer[i] != '\n' && i < buffer.length(); i++)
+	for (size_t i = 0; buffer[i] != '\n' && buffer[i] != '\0'; i++)
 	{
 		if (buffer[i] == ' ')
 			continue ;
@@ -25,21 +25,24 @@ static void parseRow(const std::string& buffer, std::vector<int>& row)
 			return ;
 		}
 		else
+		{
+			std::cout << buffer[i] << " " << std::endl;
 			row.push_back(buffer[i] - '0');
+		}
 	}
+	std::cout << std::endl;
 }
 
 static std::vector<std::vector<int>>	parseBoard(const std::string& buffer)
 {
 	std::vector<std::vector<int>> board;
-	
-	for (size_t x = 0; x < buffer.size(); x++)
+
+	std::cout << "buffer:\n" << buffer << std::endl << std::endl;	
+	for (size_t x = 0; buffer[x] != '\0'; x++)
 	{
 		board.push_back(std::vector<int>());
 		parseRow(&buffer[x], board[x]);
-		if (board[x].empty() == true)
-			return (board);
-		while (buffer[x] != '\n' && x < buffer.size())
+		while (buffer[x] != '\n' && buffer[x] != '\0')
 			x++;
 	}
 	return (board);
@@ -65,7 +68,7 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 {
 	if (solvable == false)
 	{
-		if (buffer == "Error\n")
+		if (buffer.substr(0, 6) == "Error\n")
 			std::cout << GREEN << "OK" << RESET << std::endl;
 		else
 		{
@@ -111,11 +114,15 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 	}
 }
 
+#define BUFFERSIZE 1024
+
 void	test(const std::vector<std::string>& args, bool solvable)
 {
-	std::string buffer(400, '\0');
+	std::string output;
+	char buffer[BUFFERSIZE];
 	int	pipeFd[2];
 	int exitStatus = 0;
+	ssize_t readBytes = 1;
 	
 	for (size_t i = 0; i < args.size(); i++)
 	{
@@ -134,13 +141,18 @@ void	test(const std::vector<std::string>& args, bool solvable)
 		}
 		close(pipeFd[1]);
 		waitpid(pid, &exitStatus, 0);
-		if (WEXITSTATUS(exitStatus) == EXIT_FAILURE)
+		if (WEXITSTATUS(exitStatus) == 55)
 			exitError("... exiting");
-		ssize_t readBytes = read(pipeFd[0], &buffer[0], sizeof(buffer));
-		if (readBytes == -1)
-			exitError("Failed to read from pipe");
-		buffer[readBytes] = '\0';
-		validateResult(buffer, args[i], solvable);
+		while (readBytes > 0)
+		{
+			readBytes = read(pipeFd[0], &buffer[0], BUFFERSIZE);
+			if (readBytes == -1)
+				exitError("Failed to read from pipe");
+			buffer[readBytes] = '\0';
+			output += buffer;
+		}
+		std::cout << "buffer before:\n" << output << std::endl << std::endl;	
+		validateResult(output, args[i], solvable);
 		close(pipeFd[0]);
 	}
 }
