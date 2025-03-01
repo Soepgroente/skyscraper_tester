@@ -26,5 +26,6 @@ int	main(int argc, char** argv)
 		std::cout << "\nTesting bonus" << std::endl;
 		test(bonus, true);
 	}
+	std::cout << std::endl;
 	return (0);
 }

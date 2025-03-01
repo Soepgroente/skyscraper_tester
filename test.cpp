@@ -83,10 +83,10 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 	if (solvable == false)
 	{
 		if (buffer.substr(0, 6) == "Error\n")
-			std::cout << GREEN << "OK " << RESET;
+			std::cout << GREEN << "[OK] " << RESET;
 		else
 		{
-			std::cout << RED << "KO" << RESET << std::endl << "Input: " << args << std::endl;
+			std::cout << RED << "[KO]" << RESET << std::endl << "Input: " << args << std::endl;
 			std::cout << "Expected: Error" << std::endl << "Received: " << buffer << std::endl;
 		}
 		return ;
@@ -97,7 +97,7 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 
 	if (buffer == "Error\n" || board.size() == 0)
 	{
-		std::cout << RED << "KO" << RESET << std::endl << "Input: \"" << args << "\"" << std::endl;
+		std::cout << RED << "[KO]" << RESET << std::endl << "Input: \"" << args << "\"" << std::endl;
 		std::cout << "Possible solution: " << std::endl;
 		pid_t pid = forkProcess();
 		if (pid == 0)
@@ -114,17 +114,17 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 	{
 		if (board[x].size() == 0 || board[x].size() != board[0].size())
 		{
-			std::cout << RED << "KO" << RESET << std::endl << "Input: " << args << std::endl;
+			std::cout << RED << "[KO]" << RESET << std::endl << "Input: " << args << std::endl;
 			std::cout << "Output is not a valid board, received:" << std::endl << buffer << std::endl;
 			return ;
 		}
 	}
 	std::string returnVal = checkSolution(board, clues);
 	if (returnVal == "")
-		std::cout << GREEN << "OK " << RESET;
+		std::cout << GREEN << "[OK] " << RESET;
 	else
 	{
-		std::cout << RED << "KO" << RESET << std::endl << "Input: " << args << std::endl;
+		std::cout << RED << "[KO]" << RESET << std::endl << "Input: " << args << std::endl;
 		std::cout << returnVal << std::endl;
 		printBoard(board);
 		std::exit(EXIT_FAILURE);
@@ -143,8 +143,9 @@ void	test(const std::vector<std::string>& args, bool solvable)
 	
 	for (size_t i = 0; i < args.size(); i++)
 	{
-		if (i != 0 && i % 10 == 0)
+		if (i != 0 && i % 20 == 0)
 			std::cout << std::endl;
+		fflush(stdout);
 		createPipe(pipeFd);
 		char*	argv[] = {strdup("./rush-01"), strdup(args[i].c_str()), NULL};
 		if (!argv[0] || !argv[1])
