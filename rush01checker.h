@@ -26,3 +26,4 @@ void	addBonus(std::vector<std::string>& args);
 void	test(const std::vector<std::string>& args, bool solvable);
 
 std::string	checkSolution(const std::vector<std::vector<int>>& board, const std::vector<std::vector<int>>& clues);
+void	printBoard(const std::vector<std::vector<int>>& board);

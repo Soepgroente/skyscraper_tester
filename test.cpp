@@ -13,52 +13,66 @@ static void	duplicate_fd(int oldFd, int newFd)
 	close(oldFd);
 }
 
-static void parseRow(const std::string& buffer, std::vector<int>& row)
-{	
-	for (size_t i = 0; buffer[i] != '\n' && buffer[i] != '\0'; i++)
+static bool	verifyBuffer(const std::string& buffer)
+{
+	for (size_t i = 0; i < buffer.size(); i++)
 	{
-		if (buffer[i] == ' ')
-			continue ;
-		if (buffer[i] < '1' || buffer[i] > '9')
-		{	
-			row.clear();
-			return ;
-		}
-		else
+		if (i % 2 == 1)
 		{
-			std::cout << buffer[i] << " " << std::endl;
-			row.push_back(buffer[i] - '0');
+			if (buffer[i] != ' ' && buffer[i] != '\n')
+			{
+				std::cout << "place: " << i << "\ncharacter: " << buffer[i] << std::endl;
+				puts("Invalid character");
+				return (false);
+			}
+		}
+		else if (!(buffer[i] >= '1' && buffer[i] <= '9'))
+		{
+			std::cout << i << std::endl;
+			puts("Invalid number");
+			return (false);
 		}
 	}
-	std::cout << std::endl;
+	return (true);
 }
 
 static std::vector<std::vector<int>>	parseBoard(const std::string& buffer)
 {
-	std::vector<std::vector<int>> board;
+	std::vector<std::vector<int>>	board;
 
-	std::cout << "buffer:\n" << buffer << std::endl << std::endl;	
-	for (size_t x = 0; buffer[x] != '\0'; x++)
+	if (verifyBuffer(buffer) == false)
+		return (board);
+
+	std::istringstream				stream(buffer);
+	std::string						line;
+
+	while (std::getline(stream, line))
 	{
-		board.push_back(std::vector<int>());
-		parseRow(&buffer[x], board[x]);
-		while (buffer[x] != '\n' && buffer[x] != '\0')
-			x++;
+		std::istringstream	lineStream(line);
+		std::vector<int>	row;
+		int number;
+
+		while (lineStream >> number)
+		{
+			row.push_back(number);
+		}
+		board.push_back(row);
 	}
 	return (board);
 }
 
 static std::vector<std::vector<int>>	parseClues(const std::string& args)
 {
-	std::vector<std::vector<int>> clues;
-	std::stringstream stream(args);
-	
-	clues.resize(4);
+	std::vector<std::vector<int>>	clues;
+	std::string						arg = args;
+	arg.erase(std::remove(arg.begin(), arg.end(), ' '), arg.end());
+
 	for (size_t x = 0; x < 4; x++)
 	{
-		for (size_t y = 0; y < args.size() / 4; y++)
+		clues.push_back(std::vector<int>());
+		for (size_t y = 0; y < arg.size() / 4; y++)
 		{
-			stream >> clues[x][y];
+			clues[x].push_back(std::stoi(arg.substr(x * arg.size() / 4 + y, 1)));
 		}
 	}
 	return (clues);
@@ -69,7 +83,7 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 	if (solvable == false)
 	{
 		if (buffer.substr(0, 6) == "Error\n")
-			std::cout << GREEN << "OK" << RESET << std::endl;
+			std::cout << GREEN << "OK " << RESET;
 		else
 		{
 			std::cout << RED << "KO" << RESET << std::endl << "Input: " << args << std::endl;
@@ -81,7 +95,7 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 	std::vector<std::vector<int>> board = parseBoard(buffer);
 	std::vector<std::vector<int>> clues = parseClues(args);
 
-	if (buffer == "Error\n")
+	if (buffer == "Error\n" || board.size() == 0)
 	{
 		std::cout << RED << "KO" << RESET << std::endl << "Input: \"" << args << "\"" << std::endl;
 		std::cout << "Possible solution: " << std::endl;
@@ -94,6 +108,7 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 				exitError("Failed to execute solver");
 		}
 		waitpid(pid, NULL, 0);
+		return ;
 	}
 	for (size_t x = 0; x < board.size(); x++)
 	{
@@ -106,11 +121,13 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 	}
 	std::string returnVal = checkSolution(board, clues);
 	if (returnVal == "")
-		std::cout << GREEN << "OK" << RESET << std::endl;
+		std::cout << GREEN << "OK " << RESET;
 	else
 	{
 		std::cout << RED << "KO" << RESET << std::endl << "Input: " << args << std::endl;
 		std::cout << returnVal << std::endl;
+		printBoard(board);
+		std::exit(EXIT_FAILURE);
 	}
 }
 
@@ -126,6 +143,8 @@ void	test(const std::vector<std::string>& args, bool solvable)
 	
 	for (size_t i = 0; i < args.size(); i++)
 	{
+		if (i != 0 && i % 10 == 0)
+			std::cout << std::endl;
 		createPipe(pipeFd);
 		char*	argv[] = {strdup("./rush-01"), strdup(args[i].c_str()), NULL};
 		if (!argv[0] || !argv[1])
@@ -143,16 +162,13 @@ void	test(const std::vector<std::string>& args, bool solvable)
 		waitpid(pid, &exitStatus, 0);
 		if (WEXITSTATUS(exitStatus) == 55)
 			exitError("... exiting");
-		while (readBytes > 0)
-		{
-			readBytes = read(pipeFd[0], &buffer[0], BUFFERSIZE);
-			if (readBytes == -1)
-				exitError("Failed to read from pipe");
-			buffer[readBytes] = '\0';
-			output += buffer;
-		}
-		std::cout << "buffer before:\n" << output << std::endl << std::endl;	
+		readBytes = read(pipeFd[0], &buffer[0], BUFFERSIZE);
+		if (readBytes == -1)
+			exitError("Failed to read from pipe");
+		buffer[readBytes] = '\0';
+		output += buffer;
 		validateResult(output, args[i], solvable);
 		close(pipeFd[0]);
+		output.clear();
 	}
 }

@@ -19,11 +19,11 @@ int	main(int argc, char** argv)
 	addValid4x4s(valid4x4s);
 	std::cout << "Testing invalid inputs" << std::endl;
 	test(invalidArgs, false);
-	std::cout << "Testing valid 4x4s" << std::endl;
+	std::cout << "\nTesting valid 4x4s" << std::endl;
 	test(valid4x4s, true);
 	if (bonus.empty() == false)
 	{
-		std::cout << "Testing bonus" << std::endl;
+		std::cout << "\nTesting bonus" << std::endl;
 		test(bonus, true);
 	}
 	return (0);

@@ -1,7 +1,7 @@
 EXECUTABLE	:=	rush01checker
 
 CC			:=	c++
-CPPFLAGS	=	-Wall -Wextra -Werror -std=c++20 #-g -fsanitize=address
+CPPFLAGS	=	-Wall -Wextra -Werror -std=c++20 -g -fsanitize=address
 
 OBJ_DIR		:=	objs
 

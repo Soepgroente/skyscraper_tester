@@ -53,3 +53,15 @@ void	addBonus(std::vector<std::string>& args)
 	}
 	file.close();
 }
+
+void	printBoard(const std::vector<std::vector<int>>& board)
+{
+	for (size_t x = 0; x < board.size(); x++)
+	{
+		for (size_t y = 0; y < board[x].size(); y++)
+		{
+			std::cout << board[x][y] << " ";
+		}
+		std::cout << std::endl;
+	}
+}

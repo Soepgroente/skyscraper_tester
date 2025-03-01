@@ -7,11 +7,11 @@ static int	skyscrape_top(const std::vector<std::vector<int>>& board, const std::
 	int count;
 	int vision;
 
-	for (int x = 0; x < (int)clues.size(); x++)
+	for (size_t x = 0; x < clues.size(); x++)
 	{
 		count = 0;
 		vision = 0;
-		for (int y = 0; y < (int)clues.size(); y++)
+		for (int y = 0; y < size; y++)
 		{
 			if (board[y][x] > vision)
 			{
@@ -30,7 +30,7 @@ static int	skyscrape_bottom(const std::vector<std::vector<int>>& board, const st
 	int count;
 	int vision;
 
-	for (int x = 0; x < size; x++)
+	for (size_t x = 0; x < clues.size(); x++)
 	{
 		count = 0;
 		vision = 0;
@@ -43,7 +43,10 @@ static int	skyscrape_bottom(const std::vector<std::vector<int>>& board, const st
 			}
 		}
 		if (count != clues[x])
+		{
+			std::cout << "Expected: " << clues[x] << " Received: " << count << std::endl;
 			return (x);
+		}
 	}
 	return (0);
 }
@@ -53,7 +56,7 @@ static int	skyscrape_left(const std::vector<std::vector<int>>& board, const std:
 	int count;
 	int vision;
 
-	for (int x = 0; x < size; x++)
+	for (size_t x = 0; x < clues.size(); x++)
 	{
 		count = 0;
 		vision = 0;
@@ -76,7 +79,7 @@ static int	skyscrape_right(const std::vector<std::vector<int>>& board, const std
 	int count;
 	int vision;
 
-	for (int x = 0; x < size; x++)
+	for (size_t x = 0; x < clues.size(); x++)
 	{
 		count = 0;
 		vision = 0;
