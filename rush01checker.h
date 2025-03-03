@@ -1,12 +1,15 @@
 #pragma once
 
-# include <unistd.h>
-# include <stddef.h>
-# include <stdlib.h>
-# include <string.h>
-# include <stdio.h>
-# include <limits.h>
-# include <stdbool.h>
+#include <unistd.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <sys/wait.h>
+
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
