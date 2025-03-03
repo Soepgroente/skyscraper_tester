@@ -168,14 +168,22 @@ void	test(const std::vector<std::string>& args, bool solvable)
 		waitpid(pid, &exitStatus, 0);
 		if (WEXITSTATUS(exitStatus) == 55)
 			exitError("... exiting");
+
 		readBytes = read(stdoutPipe[0], &buffer[0], BUFFERSIZE);
 		if (readBytes == -1)
 			exitError("Failed to read from pipe");
 		buffer[readBytes] = '\0';
 		output += buffer;
-		validateResult(output, args[i], solvable);
 		close(stdoutPipe[0]);
+
+		readBytes = read(stderrPipe[0], &buffer[0], BUFFERSIZE);
+		if (readBytes == -1)
+			exitError("Failed to read from pipe");
+		buffer[readBytes] = '\0';
+		output += buffer;
 		close(stderrPipe[0]);
+
+		validateResult(output, args[i], solvable);
 		output.clear();
 	}
 }
