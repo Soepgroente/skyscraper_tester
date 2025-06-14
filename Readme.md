@@ -10,8 +10,8 @@ The executable being tested MUST be named "rush-01" and be located in the root f
 The tester will stop if a valid testcase is incorrect to display the error (It will show errors on invalid testcases not returning "Error\n" but move on with the valid tests).
 The checker will check the output of the executable for validity and run the "solver" executable if it expected a valid output but got "Error\n".
 
-All valid 4x4s are tested, a select few 5x5-9x9s are tested, feel free to add testcases to one of the 3 .txt files.
+All valid 4x4s are tested, a select few 5x5-9x9s are tested, feel free to add testcases to any of the 3 .txt files.
 
-The "testexecutable" folder holds an executable for my own solver you can test with if you don't have a rush executable, simply copy paste it into the main folder.
+The "testexecutable" folder holds my own solver you can test with if you don't have a rush executable, simply run "make test" and it'll compile the executable into the root folder.
 
 Feel free to report any bugs you come across so that I may fix them.
