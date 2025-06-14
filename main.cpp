@@ -15,6 +15,11 @@ int	main(int argc, char** argv)
 	{
 		addBonus(bonus);
 	}
+	if (std::filesystem::exists("./rush-01") == false)
+	{
+		std::cerr << "Error: rush-01 file not found." << std::endl;
+		return (1);
+	}
 	addInvalidInputs(invalidArgs);
 	addValid4x4s(valid4x4s);
 	std::cout << "Testing invalid inputs" << std::endl;
