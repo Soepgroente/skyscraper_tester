@@ -1,7 +1,8 @@
 EXECUTABLE	:=	rush01checker
+TESTEXAMPLE	:=	rush-01
 
 CC			:=	c++
-CPPFLAGS	=	-Wall -Wextra -Werror -std=c++20 #-g -fsanitize=address
+CPPFLAGS	=	-Wall -Wextra -Werror -std=c++20 -O3 -flto #-g -fsanitize=address
 
 OBJ_DIR		:=	objs
 
@@ -16,11 +17,16 @@ OBJECTS		=	$(addprefix $(OBJ_DIR)/,$(SRCS:%.cpp=%.o))
 
 all: $(EXECUTABLE)
 
+test: $(TESTEXAMPLE)
+
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(EXECUTABLE): $(OBJ_DIR) $(OBJECTS)
-	$(CC) $(CPPFLAGS) $(OBJECTS) -o $(EXECUTABLE) 
+	$(CC) $(CPPFLAGS) $(OBJECTS) -o $(EXECUTABLE)
+
+$(TESTEXAMPLE):
+	$(MAKE) -C ./testexecutable
 
 $(OBJ_DIR)/%.o : %.cpp
 	$(CC) -c $(CPPFLAGS) -o $@ $^
@@ -30,6 +36,7 @@ clean:
 
 fclean: clean
 	rm -f $(EXECUTABLE)
+	rm -f $(TESTEXAMPLE)
 
 re: fclean all
 

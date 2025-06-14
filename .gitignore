@@ -52,5 +52,6 @@ Mkfile.old
 dkms.conf
 
 rush01checker
+rush-01
 .DS_Store
 .vscode
