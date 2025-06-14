@@ -136,17 +136,19 @@ static void	validateResult(const std::string& buffer, const std::string& args, b
 void	test(const std::vector<std::string>& args, bool solvable)
 {
 	std::string output;
-	char buffer[BUFFERSIZE];
-	int	pipeFd[2];
-	int exitStatus = 0;
-	ssize_t readBytes = 1;
+	char	buffer[BUFFERSIZE];
+	int		stdoutPipe[2];
+	int		stderrPipe[2];
+	int		exitStatus = 0;
+	ssize_t	readBytes = 1;
 	
 	for (size_t i = 0; i < args.size(); i++)
 	{
 		if (i != 0 && i % 20 == 0)
 			std::cout << std::endl;
 		fflush(stdout);
-		createPipe(pipeFd);
+		createPipe(stdoutPipe);
+		createPipe(stderrPipe);
 		char*	argv[] = {strdup("./rush-01"), strdup(args[i].c_str()), NULL};
 		if (!argv[0] || !argv[1])
 			exitError("Failed to strdup");
@@ -154,22 +156,34 @@ void	test(const std::vector<std::string>& args, bool solvable)
 		pid_t	pid = forkProcess();
 		if (pid == 0)
 		{
-			close(pipeFd[0]);
-			duplicate_fd(pipeFd[1], STDOUT_FILENO);
+			close(stdoutPipe[0]);
+			close(stderrPipe[0]);
+			duplicate_fd(stdoutPipe[1], STDOUT_FILENO);
+			duplicate_fd(stderrPipe[1], STDERR_FILENO);
 			if (execv("./rush-01", argv) == -1)
 				exitError("Failed to execute rush-01");
 		}
-		close(pipeFd[1]);
+		close(stdoutPipe[1]);
+		close(stderrPipe[1]);
 		waitpid(pid, &exitStatus, 0);
 		if (WEXITSTATUS(exitStatus) == 55)
 			exitError("... exiting");
-		readBytes = read(pipeFd[0], &buffer[0], BUFFERSIZE);
+
+		readBytes = read(stdoutPipe[0], &buffer[0], BUFFERSIZE);
 		if (readBytes == -1)
 			exitError("Failed to read from pipe");
 		buffer[readBytes] = '\0';
 		output += buffer;
+		close(stdoutPipe[0]);
+
+		readBytes = read(stderrPipe[0], &buffer[0], BUFFERSIZE);
+		if (readBytes == -1)
+			exitError("Failed to read from pipe");
+		buffer[readBytes] = '\0';
+		output += buffer;
+		close(stderrPipe[0]);
+
 		validateResult(output, args[i], solvable);
-		close(pipeFd[0]);
 		output.clear();
 	}
 }
