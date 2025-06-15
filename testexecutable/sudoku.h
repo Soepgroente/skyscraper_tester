@@ -11,6 +11,10 @@
 # include <string.h>
 # include <time.h>
 
+#if defined(__LINUX__)
+# include <bsd/string.h>
+#endif
+
 # define ITER_COUNT 100000
 
 extern int size;
